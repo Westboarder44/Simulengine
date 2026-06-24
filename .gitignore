@@ -1,0 +1,17 @@
+# Build directories
+build/
+bin/
+lib/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vulkan/Shader artifacts
+*.spv

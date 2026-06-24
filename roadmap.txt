@@ -1,0 +1,99 @@
+# Simulengine Development Roadmap
+
+## Phase 1: The Foundation
+*   [x] **Project Scaffolding**
+    *   [x] Initialize Git repository
+    *   [x] Setup CMake build system
+    *   [x] Create directory structure (src, include, assets, third_party)
+    *   [x] Configure .gitignore
+*   [ ] **Third-Party Integration**
+    *   [ ] Integrate GLFW (Windowing)
+    *   [ ] Integrate GLM (Math)
+    *   [ ] Integrate spdlog (Logging)
+    *   [ ] Integrate Volk (Vulkan Meta-loader)
+*   [ ] **Vulkan Boilerplate**
+    *   [ ] Create Vulkan Instance
+    *   [ ] Setup Debug Messenger/Validation Layers
+    *   [ ] Select Physical Device & Create Logical Device
+    *   [ ] Create Surface & Swapchain
+*   [ ] **Memory Management**
+    *   [ ] Integrate Vulkan Memory Allocator (VMA)
+    *   [ ] Implement basic Buffer/Image allocation wrappers
+
+## Phase 2: The Rendering Core
+*   [ ] **Resource Abstraction**
+    *   [ ] Create Buffer abstraction (Vertex, Index, Uniform)
+    *   [ ] Create Image/Texture abstraction
+    *   [ ] Setup Descriptor Set Layouts & Descriptor Pools
+*   [ ] **Command Management**
+    *   [ ] Setup Command Pools & Command Buffers
+    *   [ ] Implement Fence/Semaphore synchronization
+    *   [ ] Create a Transfer Queue for async data uploading
+*   [ ] **Shader Pipeline**
+    *   [ ] Implement Shader loading & reflection
+    *   [ ] Create Graphics Pipeline state object
+    *   [ ] Implement Render Pass & Framebuffer management
+*   [ ] **The First Frame**
+    *   [ ] Render a single triangle
+    *   [ ] Implement basic Vertex Buffer rendering
+    *   [ ] Implement Coordinate Systems (MVP Matrix)
+
+## Phase 3: Large-Scale Environments
+*   [ ] **Terrain Engine**
+    *   [ ] Implement Heightmap loading
+    *   [ ] Create Chunk-based terrain grid
+    *   [ ] Implement basic Terrain Shader (Tessellation or Geometry)
+*   [ ] **Level of Detail (LOD)**
+    *   [ ] Implement Distance-based Mesh LODs
+    *   [ ] Setup Hierarchical Culling (Octree/Quadtree)
+*   [ ] **Compute Shaders**
+    *   [ ] Implement Compute Shader pipeline
+    *   [ ] Use Compute for Frustum Culling
+    *   [ ] Use Compute for Particle effects (dust, smoke)
+
+## Phase 4: ECS & Physics
+*   [ ] **Entity Component System (ECS)**
+    *   [ ] Integrate EnTT
+    *   [ ] Define base Components (Transform, Mesh, PhysicsBody)
+*   [ ] **Physics Integration**
+    *   [ ] Integrate Jolt Physics
+    *   [ ] Implement Collision detection
+    *   [ ] Create Character Controller (Walking/Collision)
+*   [ ] **Ballistics Model**
+    *   [ ] Implement Projective physics (Velocity + Gravity)
+    *   [ ] Implement Air Resistance (Drag)
+    *   [ ] Implement Wind Influence on projectiles
+
+## Phase 5: Game Systems (Vehicles & Logistics)
+*   [ ] **Vehicle Dynamics**
+    *   [ ] Implement Wheeled vehicle physics (Suspension/Torque)
+    *   [ ] Implement basic Flight Model (Lift/Thrust/Drag)
+*   [ ] **Weaponry**
+    *   [ ] Implement Magazine/Reload logic
+    *   [ ] Implement Recoil/Spread patterns
+    *   [ ] Implement Hit Detection & Damage system
+*   [ ] **Logistics**
+    *   [ ] Create Inventory system for supplies
+    *   [ ] Implement Resource nodes (fuel, ammo)
+
+## Phase 6: Artificial Intelligence
+*   [ ] **Navigation**
+    *   [ ] Implement NavMesh generation for massive terrain
+    *   [ ] Implement Pathfinding (A*)
+*   [ ] **Individual & Squad AI**
+    *   [ ] Create Behavior Trees for combat (cover, suppress)
+    *   [ ] Implement Squad formation logic
+*   [ ] **Strategic AI**
+    *   [ ] Create "Director" AI for troop movements
+    *   [ ] Implement POI capture/defense logic
+
+## Phase 7: UI & Game Loop
+*   [ ] **User Interface**
+    *   [ ] Integrate Dear ImGui (Debugging)
+    *   [ ] Implement In-game HUD
+*   [ ] **Scenario System**
+    *   [ ] Create Mission loading/triggering system
+    *   [ ] Implement Save/Load functionality
+*   [ ] **Final Polish**
+    *   [ ] Audio Engine integration
+    *   [ ] Post-processing effects (Bloom, Tone Mapping)

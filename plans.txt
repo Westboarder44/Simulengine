@@ -1,0 +1,15 @@
+Simulengine
+
+the performant realism engine
+
+
+fundamental idea: a highly performant military conflict simulator with realism.
+
+me going on a rant about my idea because im bad at structuring:
+big map (100km*100km should be possible). realism must be a priority, everything from gravity making you fall down to wind affecting your bullet's trajectory must be taken into account.
+use compute shaders where possible to increase performance. basic game layout: Arma style thing where both teams fight over points of interest (towns, military bases, industrial areas, mines or any other poi).
+this will have multiplayer capabilities at some point, but the base game should be singleplayer friendly. scenarios should be highly customizable with the option to go solo against enemy ai, or have your own ai squad or even complete ai team. when going solo or with a small squad, the player will be its own team and in charge over all its resources. the enemy team will be entirely ai controlled, conducting troop movements, attacking and defending points, building infrastructure and even conducting scouting missions to gain intel on the player('s team).
+if the gamemode is not a solo mission the player's team will also be ai controlled and the player can either be given commands by its superiors, conduct its own missions or give commands to ai soldiers it outranks.
+players should be able to create custom missions.
+the game sould have a vast collection of weapons. anything from firearms to tanks to helicopters to fighter jets should be usable by both the player and the ai.
+anything from gathering supplies from an industrial area with a supply truck to calling in a mortar strike on an enemy position should be possible.
