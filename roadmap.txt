@@ -6,11 +6,11 @@
     *   [x] Setup CMake build system
     *   [x] Create directory structure (src, include, assets, third_party)
     *   [x] Configure .gitignore
-*   [ ] **Third-Party Integration**
-    *   [ ] Integrate GLFW (Windowing)
-    *   [ ] Integrate GLM (Math)
-    *   [ ] Integrate spdlog (Logging)
-    *   [ ] Integrate Volk (Vulkan Meta-loader)
+*   [x] **Third-Party Integration**
+    *   [x] Integrate GLFW (Windowing)
+    *   [x] Integrate GLM (Math)
+    *   [x] Integrate spdlog (Logging)
+    *   [x] Integrate Volk (Vulkan Meta-loader)
 *   [ ] **Vulkan Boilerplate**
     *   [ ] Create Vulkan Instance
     *   [ ] Setup Debug Messenger/Validation Layers

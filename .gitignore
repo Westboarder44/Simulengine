@@ -15,3 +15,5 @@ Thumbs.db
 
 # Vulkan/Shader artifacts
 *.spv
+
+GEMINI.md
