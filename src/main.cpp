@@ -1,25 +1,26 @@
-#include <iostream>
-#define VOLK_IMPLEMENTATION
-#include <volk.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <spdlog/spdlog.h>
+#include "first_app.hpp"
+
+// std
+#include <cstdlib>
+#include <stdexcept>
+
+// logging
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 
 int main() {
-    spdlog::info("Simulengine: Third-party integration test.");
-
-    if (!glfwInit()) {
-        spdlog::error("Failed to initialize GLFW");
-        return -1;
+  se::FirstApp app{};
+  if(!(app.getSeWindow() -> shouldClose())) {
+    spdlog::set_level(spdlog::level::info);
+    spdlog::info("Starting application");
+    spdlog::info("Size of window is " + std::to_string(app.WIDTH) + "x" + std::to_string(app.HEIGHT));
+    try {
+      app.run();
+    } catch (const std::exception& e) {
+      spdlog::error(e.what());
+      return EXIT_FAILURE;
     }
-
-    if (volkInitialize() != VK_SUCCESS) {
-        spdlog::error("Failed to initialize Volk");
-        return -1;
-    }
-
-    spdlog::info("Libraries initialized successfully.");
-    
-    glfwTerminate();
-    return 0;
+  }
+  spdlog::info("Application finished successfully");
+  return EXIT_SUCCESS;
 }
