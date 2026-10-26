@@ -11,7 +11,7 @@
 
 namespace se {
 
-  SeSwapChain::SeSwapChain(SeDevice &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
+  SeSwapchain::SeSwapchain(SeDevice &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
     createSwapChain();
     createImageViews();
     createRenderPass();
@@ -20,7 +20,7 @@ namespace se {
     createSyncObjects();
   }
 
-  SeSwapChain::~SeSwapChain() {
+  SeSwapchain::~SeSwapchain() {
     for (auto imageView : swapChainImageViews) {
       vkDestroyImageView(device.device(), imageView, nullptr);
     }
@@ -51,7 +51,7 @@ namespace se {
     }
   }
 
-  VkResult SeSwapChain::aquireNextImage(uint32_t *imageIndex) {
+  VkResult SeSwapchain::aquireNextImage(uint32_t *imageIndex) {
     vkWaitForFences(
       device.device(),
       1,
@@ -70,7 +70,7 @@ namespace se {
     return result;
   }
 
-  VkResult SeSwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) {
+  VkResult SeSwapchain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) {
     if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
       vkWaitForFences(device.device(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
     }
@@ -117,7 +117,7 @@ namespace se {
   }
 
 
-  void SeSwapChain::createSwapChain() {
+  void SeSwapchain::createSwapChain() {
     SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -179,7 +179,7 @@ namespace se {
   }
 
 
-  void SeSwapChain::createImageViews() {
+  void SeSwapchain::createImageViews() {
     swapChainImageViews.resize(swapChainImages.size());
     for (size_t i = 0; i < swapChainImages.size(); i++) {
       VkImageViewCreateInfo viewInfo{};
@@ -201,7 +201,7 @@ namespace se {
   }
 
 
-  void SeSwapChain::createRenderPass() {
+  void SeSwapchain::createRenderPass() {
     VkAttachmentDescription depthAttachment{};
     depthAttachment.format = findDepthFormat();
     depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -250,6 +250,7 @@ namespace se {
     std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
     VkRenderPassCreateInfo renderPassInfo = {};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    
     renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
     renderPassInfo.pAttachments = attachments.data();
     renderPassInfo.subpassCount = 1;
@@ -262,7 +263,7 @@ namespace se {
     }
   }
 
-  void SeSwapChain::createFramebuffers() {
+  void SeSwapchain::createFramebuffers() {
     swapChainFramebuffers.resize(imageCount());
     for (size_t i = 0; i < imageCount(); i++) {
       std::array<VkImageView, 2> attachments = {swapChainImageViews[i], depthImageViews[i]};
@@ -287,7 +288,7 @@ namespace se {
     }
   }
 
-  void SeSwapChain::createDepthResources() {
+  void SeSwapchain::createDepthResources() {
     VkFormat depthFormat = findDepthFormat();
     VkExtent2D swapChainExtent = getSwapChainExtent();
 
@@ -335,7 +336,7 @@ namespace se {
     }
   }
 
-  void SeSwapChain::createSyncObjects() {
+  void SeSwapchain::createSyncObjects() {
     imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
     renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
     inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
@@ -359,7 +360,7 @@ namespace se {
     }
   }
 
-  VkSurfaceFormatKHR SeSwapChain::chooseSwapSurfaceFormat(
+  VkSurfaceFormatKHR SeSwapchain::chooseSwapSurfaceFormat(
       const std::vector<VkSurfaceFormatKHR> &availableFormats) {
     for (const auto &availableFormat : availableFormats) {
       if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
@@ -371,7 +372,7 @@ namespace se {
     return availableFormats[0];
   }
 
-  VkPresentModeKHR SeSwapChain::chooseSwapPresentMode(
+  VkPresentModeKHR SeSwapchain::chooseSwapPresentMode(
       const std::vector<VkPresentModeKHR> &availablePresentModes) {
     for (const auto &availablePresentMode : availablePresentModes) {
       if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
@@ -391,7 +392,7 @@ namespace se {
     return VK_PRESENT_MODE_FIFO_KHR;
   }
 
-  VkExtent2D SeSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
+  VkExtent2D SeSwapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
       return capabilities.currentExtent;
     } else {
@@ -407,7 +408,7 @@ namespace se {
     }
   }
 
-  VkFormat SeSwapChain::findDepthFormat() {
+  VkFormat SeSwapchain::findDepthFormat() {
     return device.findSupportedFormat(
         {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
         VK_IMAGE_TILING_OPTIMAL,

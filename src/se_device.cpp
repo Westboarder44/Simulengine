@@ -18,34 +18,31 @@ namespace se {
     spdlog::error("validation layer: {}", pCallbackData->pMessage);
     return VK_FALSE;
   }
-
-  VkResult vkCreateDebugUtilsMessengerEXT(
+  VkResult createDebugUtilsMessengerEXT(
     VkInstance instance, 
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks *pAllocator,
     VkDebugUtilsMessengerEXT *pDebugMessenger) {
-
+  
       auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
       if(func != nullptr) {
         return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
       } else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;
       }
-
   }
 
-  void vkDestroyDebugUtilsMessengerEXT(
+  void destroyDebugUtilsMessengerEXT(
     VkInstance instance,
     VkDebugUtilsMessengerEXT debugMessenger,
     const VkAllocationCallbacks *pAllocator) {
-
+  
       auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
       if(func != nullptr) {
         func(instance, debugMessenger, pAllocator);
       }
-
   }
-
+  
   // class member functions
   SeDevice::SeDevice(SeWindow &window) : window(window) {
     createInstance();
@@ -60,11 +57,24 @@ namespace se {
     vkDestroyCommandPool(device_, commandPool, nullptr);
     vkDestroyDevice(device_, nullptr);
     if(enableValidationLayers) {
-      vkDestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+      destroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
     vkDestroySurfaceKHR(instance, surface_, nullptr);
     vkDestroyInstance(instance, nullptr);
   }
+
+  void SeDevice::createCommandPool() {
+  QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
+
+  VkCommandPoolCreateInfo poolInfo{};
+  poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+  poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
+  poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+  if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create command pool!");
+  }
+}
 
   void SeDevice::createInstance() {
     if (enableValidationLayers && !checkValidationLayerSupport()) {
@@ -89,16 +99,9 @@ namespace se {
     createInfo.ppEnabledExtensionNames = extensions.data();
 
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-    if (enableValidationLayers) {
-      createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-      createInfo.ppEnabledLayerNames = validationLayers.data();
-
-      populateDebugMessengerCreateInfo(debugCreateInfo);
-      createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
-    } else {
-      createInfo.enabledLayerCount = 0;
-      createInfo.pNext = nullptr;
-    }
+    
+    createInfo.enabledLayerCount = 0;
+    createInfo.pNext = nullptr;
 
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
       spdlog::error("failed to create instance!");
@@ -164,13 +167,7 @@ namespace se {
     createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
     createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-    // might not really be necessary anymore because device specific validation layers have been deprecated
-    if (enableValidationLayers) {
-      createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-      createInfo.ppEnabledLayerNames = validationLayers.data();
-    } else {
-      createInfo.enabledLayerCount = 0;
-    }
+    createInfo.enabledLayerCount = 0;
 
     if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) != VK_SUCCESS) {
       spdlog::error("Failed to create logical device");
@@ -214,7 +211,7 @@ namespace se {
     if (!enableValidationLayers) return;
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
     populateDebugMessengerCreateInfo(createInfo);
-    if (vkCreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
+    if (createDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
       spdlog::error("Failed to set up debug messenger!");
       throw std::runtime_error("failed to set up debug messenger!");
     }

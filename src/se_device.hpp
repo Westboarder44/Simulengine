@@ -90,16 +90,16 @@ namespace se {
       bool checkDeviceExtensionSupport(VkPhysicalDevice device);
       SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
-      VkInstance instance;
-      VkDebugUtilsMessengerEXT debugMessenger;
+      VkInstance instance = VK_NULL_HANDLE;
+      VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
       VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
       SeWindow &window;
-      VkCommandPool commandPool;
+      VkCommandPool commandPool = VK_NULL_HANDLE;
 
-      VkDevice device_;
-      VkSurfaceKHR surface_;
-      VkQueue graphicsQueue_;
-      VkQueue presentQueue_;
+      VkDevice device_ = VK_NULL_HANDLE;
+      VkSurfaceKHR surface_ = VK_NULL_HANDLE;
+      VkQueue graphicsQueue_ = VK_NULL_HANDLE;
+      VkQueue presentQueue_ = VK_NULL_HANDLE;
     
       const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
       const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};

@@ -3,7 +3,7 @@
 #include "se_device.hpp"
 
 // vulkan headers
-#include <vulkan/vulkan.h>
+#include<vulkan/vulkan.h>
 
 // std lib headers
 #include <string>
@@ -11,15 +11,15 @@
 
 namespace se {
 
-  class SeSwapChain{
+  class SeSwapchain{
     public: 
       static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-      SeSwapChain(SeDevice &deviceRef, VkExtent2D windowExtent);
-      ~SeSwapChain();
+      SeSwapchain(SeDevice &deviceRef, VkExtent2D windowExtent);
+      ~SeSwapchain();
 
-      SeSwapChain(const SeSwapChain&) = delete;
-      void operator=(const SeSwapChain&) = delete;
+      SeSwapchain(const SeSwapchain&) = delete;
+      void operator=(const SeSwapchain&) = delete;
 
       VkFramebuffer getFramebuffer(int index) { return swapChainFramebuffers[index]; }
       VkRenderPass getRenderPass() { return renderPass; }
@@ -49,7 +49,7 @@ namespace se {
       // helper functions
       VkSurfaceFormatKHR chooseSwapSurfaceFormat (const std::vector<VkSurfaceFormatKHR> &availableFormats);
       VkPresentModeKHR chooseSwapPresentMode (const std::vector<VkPresentModeKHR> &availablePresentModes);
-      VkExtent2D chooseSwapExten (const VkSurfaceCapabilitiesKHR &capabilities);
+      VkExtent2D chooseSwapExtent (const VkSurfaceCapabilitiesKHR &capabilities);
 
       VkFormat swapChainImageFormat;
       VkExtent2D swapChainExtent;
