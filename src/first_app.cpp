@@ -6,6 +6,7 @@
 
 namespace se {
   FirstApp::FirstApp() {
+    loadModels();
     createPipelineLayout();
     createPipeline();
     createCommandBuffers();
@@ -24,6 +25,16 @@ namespace se {
     vkDeviceWaitIdle(seDevice.device());
   }
 
+  void FirstApp::loadModels() {
+    std::vector<SeModel::Vertex> vertices {
+      {{0.0f, -0.5f}},
+      {{0.5f, 0.5f}},
+      {{-0.5f, 0.5f}}
+    };
+    seModel = std::make_unique<SeModel>(seDevice, vertices);
+
+  }
+
   void FirstApp::createPipelineLayout() {
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -40,7 +51,7 @@ namespace se {
     auto pipelineConfig = SePipeline::defaultPipelineConfigInfo(seSwapchain.width(), seSwapchain.height());
     pipelineConfig.renderPass = seSwapchain.getRenderPass();
     pipelineConfig.pipelineLayout = pipelineLayout;
-    sePipeline = std::make_unique<SePipeline>(seDevice, "../src/shaders/simple_shader.vert.spv", "../src/shaders/simple_shader.frag.spv", pipelineConfig);
+    sePipeline = std::make_unique<SePipeline>(seDevice, "../shaders/simple_shader.vert.spv", "../shaders/simple_shader.frag.spv", pipelineConfig);
 
   }
 
@@ -82,7 +93,8 @@ namespace se {
       vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
       sePipeline->bind(commandBuffers[i]);
-      vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+      seModel->bind(commandBuffers[i]);
+      seModel->draw(commandBuffers[i]);
 
       vkCmdEndRenderPass(commandBuffers[i]);
       if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

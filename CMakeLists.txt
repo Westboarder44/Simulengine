@@ -49,7 +49,8 @@ FetchContent_MakeAvailable(VulkanLoader)
 
 # Main executable
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES}
+    src/se_model.hpp)
 
 
 # Include directories for your project and dependencies
@@ -72,22 +73,30 @@ target_link_libraries(${PROJECT_NAME}
         glm::glm
 )
 
-# Custom Command: Re-run compile.sh when shaders or the script change
-set(SHADER_STAMP ${CMAKE_CURRENT_BINARY_DIR}/shaders.stamp)
-
-add_custom_command(
-    OUTPUT ${SHADER_STAMP}
-    DEPENDS 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/compile.sh
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/shaders/simple_shader.frag
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/shaders/simple_shader.vert
-    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/src/compile.sh
-    COMMAND ${CMAKE_COMMAND} -E touch ${SHADER_STAMP}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src
-    COMMENT "Shader inputs modified. Executing compile.sh..."
+file(GLOB_RECURSE ALL_SHADERS CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.vert"
+    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.frag"
 )
 
-add_custom_target(CompileShaders DEPENDS ${SHADER_STAMP})
+set(SPV_TARGETS "")
 
-# Ensure compile.sh runs before building your main executable
+# 2. Loop through each shader file and create a rule where the .spv file depends on it
+foreach(SHADER_SRC ${ALL_SHADERS})
+    set(SHADER_SPV "${SHADER_SRC}.spv") # File with .spv extension
+
+    add_custom_command(
+        OUTPUT ${SHADER_SPV}
+        DEPENDS ${SHADER_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/compile.sh
+        COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/compile.sh
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Compiling shader: ${SHADER_SRC}"
+    )
+
+    list(APPEND SPV_TARGETS ${SHADER_SPV})
+endforeach()
+
+# 3. Create a custom target holding all shader dependencies
+add_custom_target(CompileShaders DEPENDS ${SPV_TARGETS})
+
+# Ensure shaders compile before building the main executable
 add_dependencies(${PROJECT_NAME} CompileShaders)

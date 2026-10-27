@@ -3,7 +3,7 @@
 #include "se_pipeline.hpp"
 #include "se_device.hpp"
 #include "se_swap_chain.hpp"
-
+#include "se_model.hpp"
 //std
 #include <memory>
 #include <vector>
@@ -23,6 +23,7 @@ namespace se {
       void run();
       SeWindow* getSeWindow() { return &seWindow; }
     private:
+      void loadModels();
       void createPipelineLayout();
       void createPipeline();
       void createCommandBuffers();
@@ -34,6 +35,7 @@ namespace se {
       std::unique_ptr<SePipeline> sePipeline;
       VkPipelineLayout pipelineLayout;
       std::vector<VkCommandBuffer> commandBuffers;
+      std::unique_ptr<SeModel> seModel;
 
   };
 }
