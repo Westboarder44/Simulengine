@@ -4,6 +4,10 @@
 #include <stdexcept>
 #include <array>
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 namespace se {
   FirstApp::FirstApp() {
     loadModels();
@@ -25,14 +29,25 @@ namespace se {
     vkDeviceWaitIdle(seDevice.device());
   }
 
-  void FirstApp::loadModels() {
-    std::vector<SeModel::Vertex> vertices {
-      {{0.0f, -0.5f}},
-      {{0.5f, 0.5f}},
-      {{-0.5f, 0.5f}}
-    };
-    seModel = std::make_unique<SeModel>(seDevice, vertices);
+  void FirstApp::sierpinski(std::vector<SeModel::Vertex> &vertices, int depth, glm::vec2 left, glm::vec2 right, glm::vec2 top) {
+    if (depth <= 0) {
+      vertices.push_back({top});
+      vertices.push_back({left});
+      vertices.push_back({right});
+    } else {
+      auto leftTop = 0.5f * (left + top);
+      auto rightTop = 0.5f * (right + top);
+      auto leftRight = 0.5f * (left + right);
+      sierpinski(vertices, depth - 1, left, leftRight, leftTop);
+      sierpinski(vertices, depth - 1, leftRight, right, rightTop);
+      sierpinski(vertices, depth - 1, leftTop, rightTop, top);
+    }
+  }
 
+  void FirstApp::loadModels() {
+    std::vector<SeModel::Vertex> vertices {};
+    sierpinski(vertices, 6, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
+    seModel = std::make_unique<SeModel>(seDevice, vertices);
   }
 
   void FirstApp::createPipelineLayout() {
